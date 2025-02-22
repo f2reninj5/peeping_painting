@@ -5,6 +5,9 @@
 # Needed to get SOMETHING working, can focus on improvements next.
 # Requires adafruit-blinka (CircuitPython APIs for Python on big hardware)
 
+eye_center_x = 0
+eye_center_y = 0
+
 import argparse
 import math
 import pi3d
@@ -17,6 +20,10 @@ from svg.path import Path, parse_path
 from xml.dom.minidom import parse
 from gfxutil import *
 from snake_eyes_bonnet import SnakeEyesBonnet
+from camera.track import setup_camera, track
+import numpy as np
+
+setup_camera()
 
 # INPUT CONFIG for eye motion ----------------------------------------------
 # ANALOG INPUTS REQUIRE SNAKE EYES BONNET
@@ -205,6 +212,7 @@ trackingPosR = 0.3
 
 # Generate one frame of imagery
 def frame(p):
+	track()
 
 	global startX, startY, destX, destY, curX, curY
 	global startXR, startYR, destXR, destYR, curXR, curYR
@@ -252,9 +260,9 @@ def frame(p):
 			isMoving     = False
 	else:
 		if dt >= holdDuration:
-			destX        = random.uniform(-30.0, 30.0)
+			destX        = np.interp(eye_center_x, [0, 1280], [-30, 30])
 			n            = math.sqrt(900.0 - destX * destX)
-			destY        = random.uniform(-n, n)
+			destY        = np.interp(eye_center_x, [0, 720], [-30, 30])
 			moveDuration = random.uniform(0.075, 0.175)
 			startTime    = now
 			isMoving     = True
@@ -322,20 +330,7 @@ def split( # Recursive simulated pupil response when no analog sensor
 # MAIN LOOP -- runs continuously -------------------------------------------
 
 while True:
-
-	if PUPIL_IN >= 0: # Pupil scale from sensor
-		v = bonnet.channel[PUPIL_IN].value
-		# If you need to calibrate PUPIL_MIN and MAX,
-		# add a 'print v' here for testing.
-		if   v < PUPIL_MIN: v = PUPIL_MIN
-		elif v > PUPIL_MAX: v = PUPIL_MAX
-		# Scale to 0.0 to 1.0:
-		v = (v - PUPIL_MIN) / (PUPIL_MAX - PUPIL_MIN)
-		if PUPIL_SMOOTH > 0:
-			v = ((currentPupilScale * (PUPIL_SMOOTH - 1) + v) /
-			     PUPIL_SMOOTH)
-		frame(v)
-	else: # Fractal auto pupil scale
-		v = random.random()
-		split(currentPupilScale, v, 4.0, 1.0)
+	# Fractal auto pupil scale
+	v = random.random()
+	split(currentPupilScale, v, 4.0, 1.0)
 	currentPupilScale = v
