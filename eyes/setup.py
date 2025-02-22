@@ -182,3 +182,8 @@ blinkStartTimeRight = 0
 
 trackingPos = 0.3
 trackingPosR = 0.3
+
+interPupil = points_interp(pupilMinPts, pupilMaxPts, 0.5)
+mesh = points_mesh((None, interPupil, irisPts), 4, -irisZ, True)
+leftIris.re_init(pts=mesh)
+rightIris.re_init(pts=mesh)
