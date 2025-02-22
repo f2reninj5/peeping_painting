@@ -27,15 +27,15 @@ PUPIL_IN        = -1    # Analog input for pupil control (-1 = auto)
 JOYSTICK_X_FLIP = False # If True, reverse stick X axis
 JOYSTICK_Y_FLIP = False # If True, reverse stick Y axis
 PUPIL_IN_FLIP   = False # If True, reverse reading from PUPIL_IN
-TRACKING        = True  # If True, eyelid tracks pupil
+TRACKING        = False  # If True, eyelid tracks pupil
 PUPIL_SMOOTH    = 16    # If > 0, filter input from PUPIL_IN
 PUPIL_MIN       = 0.0   # Lower analog range from PUPIL_IN
 PUPIL_MAX       = 1.0   # Upper "
 WINK_L_PIN      = board.D22    # GPIO pin for LEFT eye wink button
 BLINK_PIN       = board.D23    # GPIO pin for blink button (BOTH eyes)
 WINK_R_PIN      = board.D24    # GPIO pin for RIGHT eye wink button
-AUTOBLINK       = True  # If True, eyes blink autonomously
-CRAZY_EYES      = False # If True, each eye moves in different directions
+AUTOBLINK       = False  # If True, eyes blink autonomously
+CRAZY_EYES      = True # If True, each eye moves in different directions
 
 
 # GPIO initialization ------------------------------------------------------
@@ -618,10 +618,10 @@ def frame(p):
 	leftEye.rotateToY(curX + convergence)
 	leftEye.draw()
 
-	leftUpperEyelid.draw()
-	leftLowerEyelid.draw()
-	rightUpperEyelid.draw()
-	rightLowerEyelid.draw()
+	# leftUpperEyelid.draw()
+	# leftLowerEyelid.draw()
+	# rightUpperEyelid.draw()
+	# rightLowerEyelid.draw()
 
 	k = mykeys.read()
 	if k==27:
