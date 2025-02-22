@@ -5,7 +5,7 @@ def track():
 
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-    camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    camera = cv2.VideoCapture(0)
     print("Got Capture")
 
     camera.set(3, 1280)
@@ -41,10 +41,10 @@ def track():
         # print("x =", eye_center_x, "; y =", eye_center_y)
         # cv2.circle(frame, (eye_center_x, eye_center_y), 2, (0, 0, 255), 2)
 
-        cv2.imshow("Live Camera Input with Face Detection", frame)
+        # cv2.imshow("Live Camera Input with Face Detection", frame)
         
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
 
     camera.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
