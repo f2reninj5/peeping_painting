@@ -1,17 +1,16 @@
-import cv2
-import numpy as np
-
 def track():
+    import cv2
+    import numpy as np
 
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-    camera = cv2.VideoCapture(0)
-    print("Got Capture")
+    camera = cv2.VideoCapture(0) # cv2.CAP_DSHOW for windows (fast)
+    # print("Got Capture")
 
     camera.set(3, 1280)
-    print("Set Width")
+    # print("Set Width")
     camera.set(4, 720)
-    print("Set Height")
+    # print("Set Height")
 
     global eye_center_x
     global eye_center_y
@@ -25,9 +24,9 @@ def track():
             print("Failed to grab frame")
             break
 
-        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        faces = face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+        faces = face_cascade.detectMultiScale(grey_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
         
         closest_face = (np.int32(0), np.int32(0), np.int32(0), np.int32(0))
 
@@ -48,3 +47,5 @@ def track():
 
     camera.release()
     # cv2.destroyAllWindows()
+
+# track()
