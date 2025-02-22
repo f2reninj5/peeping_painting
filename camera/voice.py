@@ -59,7 +59,7 @@ def voice():
                             else:
                                 freeze_flag = False
                         if any(word in rec_text for word in unfreeze_words):
-                            print(" -- UNFREEZE -- ")
+                            # print(" -- UNFREEZE -- ")
                             freeze_flag = False
 
                 # else:
