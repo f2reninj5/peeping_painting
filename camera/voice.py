@@ -5,6 +5,18 @@ def voice():
     import sys
     import json
 
+    painting_words = ["painting", "paint", "george orwell", "george"]
+
+    global ignore_flag
+    ignore_flag = False
+    ignore_words = ["ignore", "ignoring"]
+
+    global freeze_flag
+    freeze_flag = False
+    freeze_words = ["freeze", "stop", "halt"]
+    unfreeze_words = ["restart", "start", "begin"]
+
+
     model_path = "vosk-model-small-en-us-0.15"
 
     model = vosk.Model(model_path)
@@ -21,23 +33,43 @@ def voice():
     try:
         with sd.RawInputStream(samplerate=sample_rate, blocksize=8000, dtype='int16',
                             channels=1, callback=audio_callback):
-            print("Listening... Press Ctrl+C to stop.")
+            # print("Listening... Press Ctrl+C to stop.")
             recognizer = vosk.KaldiRecognizer(model, sample_rate)
 
             while True:
                 data = audio_queue.get()
+
                 if recognizer.AcceptWaveform(data):
                     result = recognizer.Result()
                     result_dict = json.loads(result)
-                    print(f"Recognized Text: {result_dict.get('text', '')}")
-                else:
-                    partial_result = recognizer.PartialResult()
-                    partial_result_dict = json.loads(partial_result)
-                    print(f"Partial Result: {partial_result_dict.get('partial', '')}")
+                    rec_text = result_dict.get('text', '')
+                    # print(f"Recognized Text: {rec_text}")
 
-    except KeyboardInterrupt:
-        print("\nTerminated by user")
+                    if any(word in rec_text for word in painting_words) in rec_text:
+                        if any(word in rec_text for word in ignore_words):
+                            # print(" -- IGNORE -- ")
+                            if ignore_flag == False:
+                                ignore_flag = True
+                            else:
+                                ignore_flag = False
+                        if any(word in rec_text for word in freeze_words):
+                            # print(" -- FREEZE -- ")
+                            if freeze_flag == False:
+                                freeze_flag = True
+                            else:
+                                freeze_flag = False
+                        if any(word in rec_text for word in unfreeze_words):
+                            # print(" -- UNFREEZE -- ")
+                            freeze_flag = False
+
+                # else:
+                #     partial_result = recognizer.PartialResult()
+                #     partial_result_dict = json.loads(partial_result)
+                #     print(f"Partial Result: {partial_result_dict.get('partial', '')}")
+
+    # except KeyboardInterrupt:
+    #     print("\nTerminated by user")
     except Exception as e:
         print(f"An error occurred: {e}")
 
-voice()
+# voice()
