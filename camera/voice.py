@@ -16,6 +16,15 @@ def voice():
     freeze_words = ["freeze", "stop", "halt"]
     unfreeze_words = ["restart", "start", "begin"]
 
+    global eye_hue
+    eye_hue = "green"
+    eye_words = ["eyes", "eye", "I"]
+
+    red_words = ["red", "read", "maroon"]
+    blue_words = ["blue", "blew", "cyan"]
+    green_words = ["green"]
+    brown_words = ["brown"]
+
 
     model_path = "vosk-model-small-en-us-0.15"
 
@@ -45,7 +54,7 @@ def voice():
                     rec_text = result_dict.get('text', '')
                     # print(f"Recognized Text: {rec_text}")
 
-                    if any(word in rec_text for word in painting_words) in rec_text:
+                    if any(word in rec_text for word in painting_words):
                         if any(word in rec_text for word in ignore_words):
                             # print(" -- IGNORE -- ")
                             if ignore_flag == False:
@@ -61,15 +70,28 @@ def voice():
                         if any(word in rec_text for word in unfreeze_words):
                             # print(" -- UNFREEZE -- ")
                             freeze_flag = False
+                        if any(word in rec_text for word in eye_words):
+                            if any(word in rec_text for word in red_words):
+                                # print(" -- RED EYES -- ")
+                                eye_hue = "red"
+                            if any(word in rec_text for word in blue_words):
+                                # print(" -- BLUE EYES -- ")
+                                eye_hue = "blue"
+                            if any(word in rec_text for word in green_words):
+                                # print(" -- GREEN EYES -- ")
+                                eye_hue = "green"
+                            if any(word in rec_text for word in brown_words):
+                                # print(" -- BROWN EYES -- ")
+                                eye_hue = "brown"
 
                 # else:
                 #     partial_result = recognizer.PartialResult()
                 #     partial_result_dict = json.loads(partial_result)
                 #     print(f"Partial Result: {partial_result_dict.get('partial', '')}")
 
-    # except KeyboardInterrupt:
-    #     print("\nTerminated by user")
+    except KeyboardInterrupt:
+        print("\nTerminated by user")
     except Exception as e:
         print(f"An error occurred: {e}")
 
-# voice()
+voice()
