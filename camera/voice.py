@@ -5,6 +5,16 @@ def voice():
     import sys
     import json
 
+    global ignore_flag
+    ignore_flag = False
+    ignore_words = ["ignore", "ignoring"]
+
+    global freeze_flag
+    freeze_flag = False
+    freeze_words = ["freeze", "stop", "halt"]
+    unfreeze_words = ["restart", "start", "begin"]
+
+
     model_path = "vosk-model-small-en-us-0.15"
 
     model = vosk.Model(model_path)
@@ -26,10 +36,30 @@ def voice():
 
             while True:
                 data = audio_queue.get()
+
                 if recognizer.AcceptWaveform(data):
                     result = recognizer.Result()
                     result_dict = json.loads(result)
-                    print(f"Recognized Text: {result_dict.get('text', '')}")
+                    rec_text = result_dict.get('text', '')
+                    print(f"Recognized Text: {rec_text}")
+
+                    if "painting" in rec_text:
+                        if any(word in rec_text for word in ignore_words):
+                            print(" -- IGNORE -- ")
+                            if ignore_flag == False:
+                                ignore_flag = True
+                            else:
+                                ignore_flag = False
+                        if any(word in rec_text for word in freeze_words):
+                            print(" -- FREEZE -- ")
+                            if freeze_flag == False:
+                                freeze_flag = True
+                            else:
+                                freeze_flag = False
+                        if any(word in rec_text for word in unfreeze_words):
+                            print(" -- UNFREEZE -- ")
+                            freeze_flag = False
+
                 else:
                     partial_result = recognizer.PartialResult()
                     partial_result_dict = json.loads(partial_result)
