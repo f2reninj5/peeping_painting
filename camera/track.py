@@ -34,8 +34,9 @@ def track():
             # cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 4)
             if w > closest_face[2] or h > closest_face[3]:
                 closest_face = (x, y, w, h)
-                eye_center_x = np.int32(closest_face[0] + (0.5 * closest_face[2]))
-                eye_center_y = np.int32(closest_face[1] + (0.4 * closest_face[3]))
+        
+        eye_center_x = np.int32(closest_face[0] + (0.5 * closest_face[2]))
+        eye_center_y = np.int32(closest_face[1] + (0.4 * closest_face[3]))
 
         # print("x =", eye_center_x, "; y =", eye_center_y)
         # cv2.circle(frame, (eye_center_x, eye_center_y), 2, (0, 0, 255), 2)
