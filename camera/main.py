@@ -1,26 +1,20 @@
 import cv2
 
-cap = cap = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0)
+print("Got Camera")
 
-if not cap.isOpened():
-    print("Error: Could not open camera.")
-    exit()
-
-cap.set(3, 640)  # adjust width
-cap.set(4, 480)  # adjust height
+camera.set(3, 1280)
+print("Set Width")
+camera.set(4, 720)
+print("Set Height")
 
 while True:
-    success, img = cap.read()
-    
-    if not success:
-        print("Failed to capture image")
-        break
-    
-    cv2.imshow("Live Feed", img)  # Changed window name to "Live Feed"
+    _, image = camera.read()
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):  # quit when 'q' is pressed
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    cv2.imshow("Live Camera Input", image)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-cap.release()
-cv2.destroyAllWindows()
-cv2.waitKey(1)
