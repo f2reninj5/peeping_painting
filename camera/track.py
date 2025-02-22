@@ -1,5 +1,4 @@
 import glob
-
 import cv2
 import numpy as np
 
@@ -32,7 +31,7 @@ def setup_camera():
     eye_center_x = 0
     eye_center_y = 0
 
-def track():
+def track(eye_coords):
     ret, frame = camera.read()
     if not ret:
         print("Failed to grab frame")
@@ -55,4 +54,9 @@ def track():
     eye_center_y = np.int32(closest_face[1] + (0.4 * closest_face[3]))
 
     print("x =", eye_center_x, "; y =", eye_center_y)
-    return eye_center_x, eye_center_y
+    eye_coords.x = eye_center_x
+    eye_coords.y = eye_center_y
+
+def track_loop(eye_coords):
+    while True:
+        track(eye_coords)

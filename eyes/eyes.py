@@ -1,16 +1,7 @@
-#!/usr/bin/python
-
-# This is a hasty port of the Teensy eyes code to Python...all kludgey with
-# an embarrassing number of globals in the frame() function and stuff.
-# Needed to get SOMETHING working, can focus on improvements next.
-# Requires adafruit-blinka (CircuitPython APIs for Python on big hardware)
-from camera.track import setup_camera, track
+from camera.track import setup_camera, track_loop
 import numpy as np
+from threading import Thread
 from setup import *
-
-eye_center_x = 0
-eye_center_y = 0
-setup_camera()
 
 # Generate one frame of imagery
 def frame(p):
@@ -32,11 +23,8 @@ def frame(p):
 
 	now = time.time()
 	dt  = now - startTime
-	dtR  = now - startTimeR
 
 	frames += 1
-#	if(now > beginningTime):
-#		print(frames/(now-beginningTime))
 
 	# Autonomous eye position
 	if isMoving == True:
@@ -56,9 +44,8 @@ def frame(p):
 			isMoving     = False
 	else:
 		if dt >= holdDuration:
-			xx, yy = track()
-			destX        = np.interp(xx, [0, 1280], [-30, 30])
-			destY        = -np.interp(yy, [0, 720], [-30, 30])
+			destX        = np.interp(eye_coords.x, [0, 1280], [-30, 30])
+			destY        = -np.interp(eye_coords.y, [0, 720], [-30, 30])
 			moveDuration = random.uniform(0.075, 0.175)
 			startTime    = now
 			isMoving     = True
@@ -118,6 +105,18 @@ def split( # Recursive simulated pupil response when no analog sensor
 
 
 # MAIN LOOP -- runs continuously -------------------------------------------
+
+class coords:
+	def __init__(self):
+		self.x = 0
+		self.y = 0
+
+eye_coords = coords()
+
+setup_camera()
+
+track_thread = Thread(target=track_loop, args=(eye_coords,))
+track_thread.start()
 
 while True:
 	# Fractal auto pupil scale
