@@ -48,7 +48,7 @@ def track(eye_coords):
             closest_face = (x, y, w, h)
 
     if closest_face == (np.int32(0), np.int32(0), np.int32(0), np.int32(0)):
-        closest_face = (np.int32(0), np.int32(0), np.int32(1279), np.int32(719))
+        return
 
     eye_center_x = np.int32(closest_face[0] + (0.5 * closest_face[2]))
     eye_center_y = np.int32(closest_face[1] + (0.4 * closest_face[3]))
