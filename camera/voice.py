@@ -1,11 +1,11 @@
-def voice():
-    import queue
-    import sounddevice as sd
-    import vosk
-    import sys
-    import json
+import queue
+import sounddevice as sd
+import vosk
+import json
 
+def voice():
     painting_words = ["painting", "paint", "george orwell", "george"]
+    listen_words = ["listen"]
 
     global ignore_flag
     ignore_flag = False
@@ -16,10 +16,8 @@ def voice():
     freeze_words = ["freeze", "stop", "halt"]
     unfreeze_words = ["restart", "start", "begin"]
 
-    global eye_hue
-    eye_hue = "green"
-    eye_words = ["eyes", "eye", "I"]
-
+    global iris_file
+    iris_file = "iris.jpg"
     red_words = ["red", "read", "maroon"]
     blue_words = ["blue", "blew", "cyan"]
     green_words = ["green"]
@@ -33,8 +31,6 @@ def voice():
     audio_queue = queue.Queue()
 
     def audio_callback(indata, frames, time, status):
-        if status:
-            print(f"Error: {status}", file=sys.stderr)
         audio_queue.put(bytes(indata))
 
     sample_rate = 16000
@@ -54,7 +50,12 @@ def voice():
                     rec_text = result_dict.get('text', '')
                     # print(f"Recognized Text: {rec_text}")
 
-                    if any(word in rec_text for word in painting_words):
+                    if any(word in rec_text for word in painting_words) or listening:
+                        if any(word in rec_text for word in listen_words):
+                            if listening == True:
+                                listening = False
+                            else:
+                                listening = True
                         if any(word in rec_text for word in ignore_words):
                             # print(" -- IGNORE -- ")
                             if ignore_flag == False:
@@ -70,28 +71,27 @@ def voice():
                         if any(word in rec_text for word in unfreeze_words):
                             # print(" -- UNFREEZE -- ")
                             freeze_flag = False
-                        if any(word in rec_text for word in eye_words):
-                            if any(word in rec_text for word in red_words):
-                                # print(" -- RED EYES -- ")
-                                eye_hue = "red"
-                            if any(word in rec_text for word in blue_words):
-                                # print(" -- BLUE EYES -- ")
-                                eye_hue = "blue"
-                            if any(word in rec_text for word in green_words):
-                                # print(" -- GREEN EYES -- ")
-                                eye_hue = "green"
-                            if any(word in rec_text for word in brown_words):
-                                # print(" -- BROWN EYES -- ")
-                                eye_hue = "brown"
+                        if any(word in rec_text for word in red_words):
+                            # print(" -- RED EYES -- ")
+                            iris_file = "red_iris.jpg"
+                        if any(word in rec_text for word in blue_words):
+                            # print(" -- BLUE EYES -- ")
+                            iris_file = "blue_iris.jpg"
+                        if any(word in rec_text for word in green_words):
+                            # print(" -- GREEN EYES -- ")
+                            iris_file = "iris.jpg"
+                        if any(word in rec_text for word in brown_words):
+                            # print(" -- BROWN EYES -- ")
+                            iris_file = "brown_iris.jpg"
 
                 # else:
                 #     partial_result = recognizer.PartialResult()
                 #     partial_result_dict = json.loads(partial_result)
                 #     print(f"Partial Result: {partial_result_dict.get('partial', '')}")
 
-    except KeyboardInterrupt:
-        print("\nTerminated by user")
+    # except KeyboardInterrupt:
+    #     print("\nTerminated by user")
     except Exception as e:
         print(f"An error occurred: {e}")
 
-voice()
+# voice()
