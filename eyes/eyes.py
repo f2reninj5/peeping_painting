@@ -23,8 +23,6 @@ from snake_eyes_bonnet import SnakeEyesBonnet
 from camera.track import setup_camera, track
 import numpy as np
 
-setup_camera()
-
 # INPUT CONFIG for eye motion ----------------------------------------------
 # ANALOG INPUTS REQUIRE SNAKE EYES BONNET
 
@@ -210,9 +208,10 @@ blinkStartTimeRight = 0
 trackingPos = 0.3
 trackingPosR = 0.3
 
+setup_camera()
+
 # Generate one frame of imagery
 def frame(p):
-	track()
 
 	global startX, startY, destX, destY, curX, curY
 	global startXR, startYR, destXR, destYR, curXR, curYR
@@ -260,9 +259,9 @@ def frame(p):
 			isMoving     = False
 	else:
 		if dt >= holdDuration:
-			destX        = np.interp(eye_center_x, [0, 1280], [-30, 30])
-			n            = math.sqrt(900.0 - destX * destX)
-			destY        = np.interp(eye_center_x, [0, 720], [-30, 30])
+			xx, yy = track()
+			destX        = np.interp(xx, [0, 1280], [-30, 30])
+			destY        = np.interp(yy, [0, 720], [-30, 30])
 			moveDuration = random.uniform(0.075, 0.175)
 			startTime    = now
 			isMoving     = True
