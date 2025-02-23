@@ -54,6 +54,8 @@ def track(eye_coords):
     eye_center_y = np.int32(closest_face[1] + (0.4 * closest_face[3]))
 
     print("x =", eye_center_x, "; y =", eye_center_y)
+    eye_coords.px = eye_coords.x
+    eye_coords.py = eye_coords.y
     eye_coords.x = eye_center_x
     eye_coords.y = eye_center_y
 
