@@ -35,8 +35,13 @@ def voice():
 
     sample_rate = 16000
 
+    devices = sd.query_devices()
+    for i, device in enumerate(devices):
+        if device['max_input_channels'] > 0:
+            dindex = device['index']
+
     try:
-        with sd.RawInputStream(samplerate=sample_rate, blocksize=8000, dtype='int16',
+        with sd.RawInputStream(device = dindex, channels = 1, samplerate = sample_rate, blocksize=8000, dtype='int16',
                             channels=1, callback=audio_callback):
             # print("Listening... Press Ctrl+C to stop.")
             recognizer = vosk.KaldiRecognizer(model, sample_rate)
